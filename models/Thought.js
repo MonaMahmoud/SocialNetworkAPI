@@ -1,12 +1,12 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, Types } = require('mongoose');
 
 
 //Schema to create reaction subdocument
-const reactionSchema = new mongoose.Schema({
+const reactionSchema = new Schema({
     reactionId: {
-        type: mongoose.ObjectId,
+        type: Types.ObjectId,
         required: true,
-        default: mongoose.Types.ObjectId(),
+        default: Types.ObjectId(),
     },
     reactionBody: {
         type: String,
@@ -53,8 +53,8 @@ const thoughtSchema = new Schema({
     id: false,
 });
 
-// Create a virtual property `commentCount` that gets the amount of comments per post
-postSchema.virtual('reactionCount').get(function() {
+// Create a virtual property `reactionCount` that gets the amount of reactions per post
+thoughtSchema.virtual('reactionCount').get(function() {
     return this.reactions.length;
 });
 
