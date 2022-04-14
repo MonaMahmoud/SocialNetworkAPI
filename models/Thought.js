@@ -1,4 +1,5 @@
 const { Schema, model, Types } = require('mongoose');
+const User = require('./User');
 
 
 //Schema to create reaction subdocument
@@ -41,9 +42,10 @@ const thoughtSchema = new Schema({
     username: {
         type: String,
         required: true,
+        ref: User,
     },
 
-    // This will include an array that holds all the employees' information
+    // This will include an array that holds all the thought's reactions
     reactions: [reactionSchema],
 
 }, {
