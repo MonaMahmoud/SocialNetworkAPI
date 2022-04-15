@@ -22,6 +22,11 @@ const reactionSchema = new Schema({
         default: Date.now,
         get: getCreatedAt,
     },
+}, {
+    toJSON: {
+        getters: true,
+    },
+    _id: false,
 });
 
 // Schema to create Thought model

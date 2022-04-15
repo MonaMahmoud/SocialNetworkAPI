@@ -1,27 +1,7 @@
 //const { ObjectId } = require('mongoose').Types;
 const { User, Thought } = require('../models');
 
-// Aggregate function to get the number of students overall
-// const headCount = async() =>
-//     Student.aggregate()
-//     .count('studentCount')
-//     .then((numberOfStudents) => numberOfStudents);
 
-// Aggregate function for getting the overall grade using $avg
-// const grade = async(studentId) =>
-//     Student.aggregate([
-//         // only include the given student by using $match
-//         { $match: { _id: ObjectId(studentId) } },
-//         {
-//             $unwind: '$assignments',
-//         },
-//         {
-//             $group: {
-//                 _id: ObjectId(studentId),
-//                 overallGrade: { $avg: '$assignments.score' },
-//             },
-//         },
-//     ]);
 
 module.exports = {
     // Get all users
@@ -47,6 +27,19 @@ module.exports = {
             .then((user) => res.json(user))
             .catch((err) => res.status(500).json(err));
     },
+
+    // Update a user
+    updateUser(req, res) {
+        User.findOneAndUpdate({ _id: req.params.userId }, { $set: req.body }, { runValidators: true, new: true })
+            .then((user) =>
+                !user ?
+                res.status(404).json({ message: 'No user with this id!' }) :
+                res.json(user)
+            )
+            .catch((err) => res.status(500).json(err));
+    },
+
+
     // Delete a user and remove all linked thoughts
     deleteUser(req, res) {
         User.findOneAndRemove({ _id: req.params.userId })
@@ -70,9 +63,7 @@ module.exports = {
 
     // Add a friend to a user
     addFriend(req, res) {
-        // console.log('You are adding an assignment');
-        //console.log(req.body);
-        User.findOneAndUpdate({ _id: req.params.userId }, { $addToSet: { friends: req.body } }, { runValidators: true, new: true })
+        User.findOneAndUpdate({ _id: req.params.userId }, { $addToSet: { friends: req.params.friendId } }, { runValidators: true, new: true })
             .then((user) =>
                 !user ?
                 res
@@ -84,7 +75,9 @@ module.exports = {
     },
     // Remove friend from a user
     removeFriend(req, res) {
-        User.findOneAndUpdate({ _id: req.params.userId }, { $pull: { friends: { friendId: req.params.friendId } } }, { runValidators: true, new: true })
+        console.log(req.params.userId);
+        console.log(req.params.friendId);
+        User.findOneAndUpdate({ _id: req.params.userId }, { $pull: { friends: req.params.friendId } }, { runValidators: true, new: true })
             .then((user) =>
                 !user ?
                 res.status(404)
